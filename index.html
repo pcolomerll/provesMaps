@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta de Opinión</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        input, textarea, button {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Déjanos tu Opinión</h2>
+    
+    <form onsubmit="event.preventDefault(); submitReview();">
+        <label for="rating">Calificación (1-5):</label>
+        <input type="number" id="rating" min="1" max="5" required>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" required>
+
+        <label for="feedback">Comentarios:</label>
+        <textarea id="feedback" placeholder="Escribe tu opinión aquí..."></textarea>
+
+        <button type="submit">Enviar</button>
+    </form>
+
+    <script>
+        function submitReview() {
+            alert("🚀 Enviando tu opinión...");
+
+            var rating = document.getElementById("rating").value;
+            var email = document.getElementById("email").value;
+            var feedback = document.getElementById("feedback").value;
+
+            console.log("📩 Datos enviados:", { calificacion: rating, email: email, feedback: feedback });
+
+            fetch("https://script.google.com/macros/s/AKfycbz2tErUCqI8NJ_8XPxeWbhxJbQmFecXJB-VL90UbHpW7l6O42zkn9l1iPyLCNtvgKjt/exec", {  
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    calificacion: rating,
+                    email: email,
+                    feedback: feedback
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("✅ Respuesta recibida:", data);
+                alert(data.mensaje);
+                if (data.url) {
+                    console.log("🔗 Redirigiendo a:", data.url);
+                    window.location.href = data.url;
+                }
+            })
+            .catch(error => {
+                console.error("❌ Error en la petición:", error);
+                alert("Hubo un problema al enviar la opinión.");
+            });
+        }
+    </script>
+
+</body>
+</html>
